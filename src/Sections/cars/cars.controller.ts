@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Put,
   Res,
+  HttpStatus,
 } from '@nestjs/common';
 import { CarsService } from './cars.service';
 import { CarRequestDto } from './dto/request.dto';
@@ -39,6 +40,21 @@ export class CarsController {
     } catch (err) {
       response
         .status(PostgreStatusCode.AuthorizationError)
+        .send({ error: true, message: err });
+    }
+  }
+
+  @Get('count')
+  async getCount(@Res() response: Response): Promise<any> {
+    try {
+      const data: any = await this.carsService.Count();
+      console.log(data);
+      response.status(HttpStatus.OK).send({count:data});
+      return data;
+    } catch (err) {
+      console.log(err);
+      response
+        .status(HttpStatus.UNAUTHORIZED)
         .send({ error: true, message: err });
     }
   }

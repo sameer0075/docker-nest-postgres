@@ -29,4 +29,8 @@ export class BaseService<T> {
   async softDelete(id: any): Promise<any> {
     return this.repo.softDelete(id);
   }
+
+  async Count():Promise<any> {
+    return this.repo.count();
+  }
 }

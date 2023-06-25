@@ -37,6 +37,7 @@ export class UsersService {
     const hashed = await bcrypt.hashSync(body.password, SALT_ROUNDS);
     body.password = hashed;
     const userExist = await this.userRep.findOne({
+      withDeleted: true, 
       where: { email: body.email },
     });
     if (userExist) {
@@ -100,7 +101,7 @@ export class UsersService {
         throw 'Invalid Credentials!';
       }
     } else {
-      if (!data?.is_active) {
+      if (data && !data.is_active) {
         throw 'Your account isnt activated! Please activate your account';
       } else {
         throw 'Invalid Credentials! User not found.';
@@ -165,7 +166,7 @@ export class UsersService {
     });
     if (data) {
       data.otp = uid();
-      await this.update(data.id, data);
+      await this.userRep.update(data.id, data);
       const content = emailContent(data);
       emailService(this.mailService, body.email, content);
       return data;
@@ -176,6 +177,7 @@ export class UsersService {
 
   async update(id: number, body: UserUpdateDto): Promise<UserResponseDto> {
     const userExist = await this.userRep.findOne({
+      withDeleted: true,
       where: { email: body.email },
     });
     if (userExist?.id != id && userExist?.email == body.email) {

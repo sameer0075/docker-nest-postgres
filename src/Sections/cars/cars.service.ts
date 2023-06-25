@@ -39,6 +39,10 @@ export class CarsService {
     );
   }
 
+  async Count():Promise<any> {
+    return this.carsRep.Count()
+  }
+
   async findAll(
     user,
     pagination: {

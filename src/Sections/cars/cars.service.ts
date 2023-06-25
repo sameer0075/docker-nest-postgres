@@ -14,7 +14,7 @@ export class CarsService {
   constructor(
     @InjectRepository(Cars)
     private carsRepository: Repository<Cars>,
-    @InjectRepository(Cars)
+    @InjectRepository(Categories)
     private categoryRepository: Repository<Categories>,
   ) {
     this.carsRep = new BaseService<Cars>(this.carsRepository);
@@ -25,7 +25,7 @@ export class CarsService {
     const data: Cars = await this.carsRep.save(body);
     const { id, name, description, model, make, color, registration_no } = data;
     const category_id: Categories = await this.categoryrRep.findOne({
-      where: { id: data.category_id },
+      where: { id: body.category_id },
     });
     return new CarResponseDto(
       id,
@@ -48,7 +48,15 @@ export class CarsService {
     },
   ): Promise<CarResponseDto[]> {
     const data: Cars[] = await this.carsRep.findAll({
-      select: ['id', 'name', 'description'],
+      select: [
+        'id',
+        'name',
+        'description',
+        'color',
+        'make',
+        'model',
+        'registration_no',
+      ],
       relations: ['category_id'],
       skip: pagination.offset,
       take: pagination.limit,
@@ -58,7 +66,15 @@ export class CarsService {
 
   async findOne(id: number, user): Promise<CarResponseDto> {
     const data: Cars = await this.carsRep.findOne({
-      select: ['id', 'name', 'description'],
+      select: [
+        'id',
+        'name',
+        'description',
+        'color',
+        'make',
+        'model',
+        'registration_no',
+      ],
       relations: ['category_id'],
       where: { id },
     });
@@ -92,13 +108,19 @@ export class CarsService {
     await this.carsRep.update(id, body);
     const data: Cars = await this.carsRep.findOne({
       where: { id },
+      relations: ['category_id'],
     });
     if (data) {
-      const { id, name, description, color, make, model, registration_no } =
-        data;
-      const category_id: Categories = await this.categoryrRep.findOne({
-        where: { id: data.category_id },
-      });
+      const {
+        id,
+        name,
+        description,
+        color,
+        make,
+        model,
+        registration_no,
+        category_id,
+      } = data;
       return new CarResponseDto(
         id,
         name,

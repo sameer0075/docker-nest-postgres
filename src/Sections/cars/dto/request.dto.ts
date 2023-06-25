@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class CarRequestDto {
   @ApiProperty({
@@ -57,11 +63,11 @@ export class CarRequestDto {
   registration_no: string;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     required: true,
     description: 'This is a required property',
   })
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  category_id: string;
+  category_id: number;
 }

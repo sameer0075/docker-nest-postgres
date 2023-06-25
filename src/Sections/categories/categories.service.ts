@@ -44,10 +44,6 @@ export class CategoriesService {
       take: pagination.limit,
     });
     return data;
-    // return data.map((info: Categories) => {
-    //   const { id, name, description } = info;
-    //   return new CategoryResponseDto(id, name, description);
-    // });
   }
 
   async findOne(id: number, user): Promise<CategoryResponseDto> {

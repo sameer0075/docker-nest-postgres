@@ -5,10 +5,16 @@ export const Pagination = createParamDecorator(
     const request = ctx.switchToHttp().getRequest();
     const page = parseInt(request.query.page, 10) || 1;
     const limit = parseInt(request.query.limit, 10) || 10;
-    return {
-      page,
-      limit,
-      offset: (page - 1) * limit,
-    };
+    if (limit != -1) {
+      return {
+        page,
+        limit,
+        offset: (page - 1) * limit,
+      };
+    } else {
+      delete request.query.page;
+      delete request.query.limit;
+      return request.query;
+    }
   },
 );

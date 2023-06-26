@@ -64,6 +64,9 @@ export class CarsService {
       relations: ['category_id'],
       skip: pagination.offset,
       take: pagination.limit,
+      order:{
+        id:"DESC"
+      }
     });
     return data;
   }

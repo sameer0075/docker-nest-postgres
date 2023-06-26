@@ -42,6 +42,9 @@ export class CategoriesService {
       select: ['id', 'name', 'description'],
       skip: pagination.offset,
       take: pagination.limit,
+      order:{
+        id:"DESC"
+      }
     });
     return data;
   }

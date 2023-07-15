@@ -71,12 +71,10 @@ export class CategoriesController {
   async findOne(
     @Res() response: Response,
     @Param('id', ParseIntPipe) id: number,
-    @LoggedInUser() user,
   ): Promise<CategoryResponseDto> {
     try {
       const data: CategoryResponseDto = await this.categoriesService.findOne(
         id,
-        user,
       );
       response.status(PostgreStatusCode.SuccessCode).send(data);
       return data;

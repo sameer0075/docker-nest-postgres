@@ -128,10 +128,9 @@ export class UsersController {
   async findOne(
     @Res() response: Response,
     @Param('id', ParseIntPipe) id: number,
-    @LoggedInUser() user,
   ): Promise<UserResponseDto> {
     try {
-      const data: UserResponseDto = await this.usersService.findOne(id, user);
+      const data: UserResponseDto = await this.usersService.findOne(id);
       response.status(PostgreStatusCode.SuccessCode).send(data);
       return data;
     } catch (err) {

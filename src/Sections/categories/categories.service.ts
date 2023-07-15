@@ -21,8 +21,16 @@ export class CategoriesService {
     @InjectRepository(Cars)
     private carsRepository: Repository<Cars>,
   ) {
-    this.categoryRep = new BaseService<Categories>(this.categoryRepository,Categories.name,this.cacheManager);
-    this.carsRep = new BaseService<Cars>(this.carsRepository,Cars.name,this.cacheManager);
+    this.categoryRep = new BaseService<Categories>(
+      this.categoryRepository,
+      Categories.name,
+      this.cacheManager,
+    );
+    this.carsRep = new BaseService<Cars>(
+      this.carsRepository,
+      Cars.name,
+      this.cacheManager,
+    );
   }
   async create(body: CategoryRequestDto): Promise<CategoryResponseDto> {
     const unique_code = uid();
@@ -44,19 +52,22 @@ export class CategoriesService {
       select: ['id', 'name', 'description'],
       skip: pagination.offset,
       take: pagination.limit,
-      order:{
-        id:"DESC"
-      }
+      order: {
+        id: 'DESC',
+      },
     });
-    const categoryResponse: CategoryResponseDto[] = data.map(category => 
-      new CategoryResponseDto(category.id, category.name, category.description)
+    const categoryResponse: CategoryResponseDto[] = data.map(
+      (category) =>
+        new CategoryResponseDto(
+          category.id,
+          category.name,
+          category.description,
+        ),
     );
-  
     return categoryResponse;
-  
   }
 
-  async findOne(id: number, user): Promise<CategoryResponseDto> {
+  async findOne(id: number): Promise<CategoryResponseDto> {
     const data: Categories = await this.categoryRep.findOne({
       select: ['id', 'name', 'description'],
       where: { id },

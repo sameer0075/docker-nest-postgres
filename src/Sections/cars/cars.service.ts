@@ -19,8 +19,16 @@ export class CarsService {
     @InjectRepository(Categories)
     private categoryRepository: Repository<Categories>,
   ) {
-    this.carsRep = new BaseService<Cars>(this.carsRepository,Cars.name,this.cacheManager);
-    this.categoryrRep = new BaseService<Categories>(this.categoryRepository,Categories.name,this.cacheManager);
+    this.carsRep = new BaseService<Cars>(
+      this.carsRepository,
+      Cars.name,
+      this.cacheManager,
+    );
+    this.categoryrRep = new BaseService<Categories>(
+      this.categoryRepository,
+      Categories.name,
+      this.cacheManager,
+    );
   }
 
   async create(body: CarRequestDto): Promise<CarResponseDto> {
@@ -41,8 +49,8 @@ export class CarsService {
     );
   }
 
-  async Count():Promise<any> {
-    return this.carsRep.Count()
+  async Count(): Promise<any> {
+    return this.carsRep.Count();
   }
 
   async findAll(
@@ -66,25 +74,27 @@ export class CarsService {
       relations: ['category_id'],
       skip: pagination.offset,
       take: pagination.limit,
-      order:{
-        id:"DESC"
-      }
+      order: {
+        id: 'DESC',
+      },
     });
-    const carsResponses: CarResponseDto[] = data.map(car => new CarResponseDto(
-      car.id,
-      car.name,
-      car.description,
-      car.color,
-      car.make,
-      car.model,
-      car.registration_no,
-      car.category_id
-    ));
-  
+    const carsResponses: CarResponseDto[] = data.map(
+      (car) =>
+        new CarResponseDto(
+          car.id,
+          car.name,
+          car.description,
+          car.color,
+          car.make,
+          car.model,
+          car.registration_no,
+          car.category_id,
+        ),
+    );
     return carsResponses;
   }
 
-  async findOne(id: number, user): Promise<CarResponseDto> {
+  async findOne(id: number): Promise<CarResponseDto> {
     const data: Cars = await this.carsRep.findOne({
       select: [
         'id',

@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   ParseIntPipe,
@@ -48,7 +47,7 @@ export class CarsController {
   async getCount(@Res() response: Response): Promise<any> {
     try {
       const data: any = await this.carsService.Count();
-      response.status(HttpStatus.OK).send({count:data});
+      response.status(HttpStatus.OK).send({ count: data });
       return data;
     } catch (err) {
       console.log(err);
@@ -82,10 +81,9 @@ export class CarsController {
   async findOne(
     @Res() response: Response,
     @Param('id', ParseIntPipe) id: number,
-    @LoggedInUser() user,
   ): Promise<CarResponseDto> {
     try {
-      const data: CarResponseDto = await this.carsService.findOne(id, user);
+      const data: CarResponseDto = await this.carsService.findOne(id);
       response.status(PostgreStatusCode.SuccessCode).send(data);
       return data;
     } catch (err) {

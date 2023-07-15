@@ -32,14 +32,18 @@ export class UsersService {
     private userRepository: Repository<User>,
     private mailService: MailerService,
   ) {
-    this.userRep = new BaseService<User>(this.userRepository,User.name,this.cacheManager);
+    this.userRep = new BaseService<User>(
+      this.userRepository,
+      User.name,
+      this.cacheManager,
+    );
   }
 
   async create(body: UserRequestDto): Promise<UserResponseDto> {
     const hashed = await bcrypt.hashSync(body.password, SALT_ROUNDS);
     body.password = hashed;
     const userExist = await this.userRep.findOne({
-      withDeleted: true, 
+      withDeleted: true,
       where: { email: body.email },
     });
     if (userExist) {
@@ -78,7 +82,7 @@ export class UsersService {
       const { id, name, email, phone, is_active, is_super_user } = data;
       const authenticated = await bcrypt.compare(body.password, data.password);
       if (authenticated) {
-        let user = {
+        const user = {
           id,
           name,
           email,
@@ -130,7 +134,7 @@ export class UsersService {
     });
   }
 
-  async findOne(id: number, user): Promise<UserResponseDto> {
+  async findOne(id: number): Promise<UserResponseDto> {
     const data: User = await this.userRep.findOne({
       select: ['id', 'name', 'email', 'phone', 'is_active'],
       where: { id },
@@ -150,7 +154,7 @@ export class UsersService {
     });
     if (data) {
       if (data.otp === body.otp) {
-        const { id, name, email, phone, is_active } = data;
+        const { id, name, email, phone } = data;
         await this.userRep.update(id, { otp: null, is_active: true });
         return new UserResponseDto(id, name, email, phone, true);
       } else {

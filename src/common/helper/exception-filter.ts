@@ -14,7 +14,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
     const exceptionMessage: any = exception.getResponse();
-    let message = exceptionMessage?.message || 'Internal server error';
+    const message = exceptionMessage?.message || 'Internal server error';
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),

@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Cache } from 'cache-manager';
 import ShortUniqueId from 'short-unique-id';
 import { BaseService } from 'src/common/services/base.service';
 import { Cars } from 'src/entities/cars.entity';
@@ -14,13 +15,14 @@ export class CategoriesService {
   private categoryRep: BaseService<Categories>;
   private carsRep: BaseService<Cars>;
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectRepository(Categories)
     private categoryRepository: Repository<Categories>,
     @InjectRepository(Cars)
     private carsRepository: Repository<Cars>,
   ) {
-    this.categoryRep = new BaseService<Categories>(this.categoryRepository);
-    this.carsRep = new BaseService<Cars>(this.carsRepository);
+    this.categoryRep = new BaseService<Categories>(this.categoryRepository,Categories.name,this.cacheManager);
+    this.carsRep = new BaseService<Cars>(this.carsRepository,Cars.name,this.cacheManager);
   }
   async create(body: CategoryRequestDto): Promise<CategoryResponseDto> {
     const unique_code = uid();
@@ -46,7 +48,12 @@ export class CategoriesService {
         id:"DESC"
       }
     });
-    return data;
+    const categoryResponse: CategoryResponseDto[] = data.map(category => 
+      new CategoryResponseDto(category.id, category.name, category.description)
+    );
+  
+    return categoryResponse;
+  
   }
 
   async findOne(id: number, user): Promise<CategoryResponseDto> {

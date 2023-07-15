@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/services/base.service';
+import { Cache } from 'cache-manager';
 import { Repository } from 'typeorm';
 import {
   LoginRequestDto,
@@ -26,11 +27,12 @@ export class UsersService {
   private userRep: BaseService<User>;
 
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private mailService: MailerService,
   ) {
-    this.userRep = new BaseService<User>(this.userRepository);
+    this.userRep = new BaseService<User>(this.userRepository,User.name,this.cacheManager);
   }
 
   async create(body: UserRequestDto): Promise<UserResponseDto> {

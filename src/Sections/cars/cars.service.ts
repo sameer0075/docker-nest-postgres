@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Cache } from 'cache-manager';
 import { BaseService } from 'src/common/services/base.service';
 import { Cars } from 'src/entities/cars.entity';
 import { Categories } from 'src/entities/categories.entity';
@@ -12,13 +13,14 @@ export class CarsService {
   private carsRep: BaseService<Cars>;
   private categoryrRep: BaseService<Categories>;
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectRepository(Cars)
     private carsRepository: Repository<Cars>,
     @InjectRepository(Categories)
     private categoryRepository: Repository<Categories>,
   ) {
-    this.carsRep = new BaseService<Cars>(this.carsRepository);
-    this.categoryrRep = new BaseService<Categories>(this.categoryRepository);
+    this.carsRep = new BaseService<Cars>(this.carsRepository,Cars.name,this.cacheManager);
+    this.categoryrRep = new BaseService<Categories>(this.categoryRepository,Categories.name,this.cacheManager);
   }
 
   async create(body: CarRequestDto): Promise<CarResponseDto> {
@@ -68,7 +70,18 @@ export class CarsService {
         id:"DESC"
       }
     });
-    return data;
+    const carsResponses: CarResponseDto[] = data.map(car => new CarResponseDto(
+      car.id,
+      car.name,
+      car.description,
+      car.color,
+      car.make,
+      car.model,
+      car.registration_no,
+      car.category_id
+    ));
+  
+    return carsResponses;
   }
 
   async findOne(id: number, user): Promise<CarResponseDto> {

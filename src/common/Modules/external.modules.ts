@@ -5,10 +5,13 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { TypeOrmConfigService } from "src/shared/typeorm/typeorm.service";
+import { CacheModule } from "@nestjs/common";
+
 
 export const ExternalModules = [
     ConfigModule.forRoot(),
     ScheduleModule.forRoot(),
+    CacheModule.register({isGlobal:true}),
     MulterModule.register({
       dest: './files',
     }),

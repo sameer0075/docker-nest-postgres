@@ -6,7 +6,6 @@ import * as cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './common/helper/exception-filter';
-import * as csurf from 'csurf';
 
 async function bootstrap() {
   const app: NestExpressApplication = await NestFactory.create(AppModule);
@@ -30,7 +29,6 @@ async function bootstrap() {
   app.enableCors();
   app.use(cookieParser());
   app.useGlobalFilters(new HttpExceptionFilter());
-  app.use(csurf());
 
   await app.listen(port, () => {
     console.log('[API UP]', port);

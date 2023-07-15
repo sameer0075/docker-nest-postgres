@@ -2,7 +2,7 @@ import { extname } from 'path';
 import * as moment from 'moment';
 import * as uuid from 'uuid';
 const uniqueId = uuid.v4();
-const dateCreated: any = moment().format('YYYY-MM-DD HH:mm:ss');
+const dateCreated: Date | string = moment().format('YYYY-MM-DD HH:mm:ss');
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 export const imageFileFilter = (_req, file, callback) => {

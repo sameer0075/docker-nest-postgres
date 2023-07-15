@@ -30,7 +30,7 @@ export class BaseService<T> {
     return this.repo.findOne(opts);
   }
 
-  async save(payload: any): Promise<T> {
+  async save(payload): Promise<T> {
     const cacheKey = this.entityName + '_all';
     const cacheData = await this.client.get(cacheKey);
     const data = await this.repo.save(payload);
@@ -45,7 +45,7 @@ export class BaseService<T> {
     return data;
   }
 
-  async update(id: any, payload: any): Promise<any> {
+  async update(id: number, payload): Promise<T> {
     const cacheKey = this.entityName + '_all';
     const cacheData = await this.client.get(cacheKey);
     const data = this.repo.update(id, payload);
@@ -61,7 +61,7 @@ export class BaseService<T> {
     return data;
   }
 
-  async delete(id: any): Promise<any> {
+  async delete(id): Promise<T> {
     const cacheKey = this.entityName + '_all';
     const cacheData = await this.client.get(cacheKey);
     if (cacheData) {
@@ -72,7 +72,7 @@ export class BaseService<T> {
     return this.repo.delete(id);
   }
 
-  async softDelete(id: any): Promise<any> {
+  async softDelete(id): Promise<T> {
     const cacheKey = this.entityName + '_all';
     const cacheData = await this.client.get(cacheKey);
     if (cacheData) {
@@ -83,7 +83,7 @@ export class BaseService<T> {
     return this.repo.softDelete(id);
   }
 
-  async Count(): Promise<any> {
+  async Count(): Promise<T> {
     return this.repo.count();
   }
 }

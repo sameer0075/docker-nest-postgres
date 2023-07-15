@@ -49,7 +49,7 @@ export class CarsService {
     );
   }
 
-  async Count(): Promise<any> {
+  async Count() {
     return this.carsRep.Count();
   }
 

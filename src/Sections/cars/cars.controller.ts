@@ -44,11 +44,10 @@ export class CarsController {
   }
 
   @Get('count')
-  async getCount(@Res() response: Response): Promise<any> {
+  async getCount(@Res() response: Response): Promise<void> {
     try {
-      const data: any = await this.carsService.Count();
+      const data = await this.carsService.Count();
       response.status(HttpStatus.OK).send({ count: data });
-      return data;
     } catch (err) {
       console.log(err);
       response

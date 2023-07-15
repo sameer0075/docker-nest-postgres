@@ -54,7 +54,7 @@ export class UsersService {
       const content = emailContent(body);
       const data: User = await this.userRep.save(body);
       if (data) {
-        emailService(this.mailService, body.email, content);
+        emailService(this.mailService, body.email, content, 'Sign Up EMail ✔');
         const { id, name, email, phone, is_active } = data;
         return new UserResponseDto(id, name, email, phone, is_active);
       } else {
@@ -174,7 +174,12 @@ export class UsersService {
       data.otp = uid();
       await this.userRep.update(data.id, data);
       const content = emailContent(data);
-      emailService(this.mailService, body.email, content);
+      emailService(
+        this.mailService,
+        body.email,
+        content,
+        'OTP Verification EMail ✔',
+      );
       return data;
     } else {
       throw 'User not found';

@@ -1,9 +1,9 @@
-export function emailService(mailservice, email, content) {
+export function emailService(mailservice, email, content, title) {
   mailservice
     .sendMail({
       to: email, // list of receivers
       from: process.env.EMAIL_USERNAME, // sender address
-      subject: 'Sign Up EMail ✔', // Subject line
+      subject: title, // Subject line
       html: content, // HTML body content
     })
     .then((success) => {

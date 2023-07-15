@@ -52,7 +52,7 @@ export function emailContent(data) {
         </div>
       </body>
     </html>
-    `;
+  `;
 
   return content;
 }

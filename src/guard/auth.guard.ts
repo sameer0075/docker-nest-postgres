@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate {
     if (allowUnauthorizedRequest) {
       return allowUnauthorizedRequest;
     } else {
-      let index = request.res.req.rawHeaders.findIndex(indexFind);
+      const index = request.res.req.rawHeaders.findIndex(indexFind);
       if (index != -1) {
         const BearerToken = request.res.req.rawHeaders[index + 1];
         const token = BearerToken.split('Bearer')[1];

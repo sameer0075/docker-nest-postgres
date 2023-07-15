@@ -20,13 +20,13 @@ export class RoleGuard implements CanActivate {
     if (allowUnauthorizedRequest) {
       return allowUnauthorizedRequest;
     } else {
-      let index = request.res.req.rawHeaders.findIndex(indexFind);
+      const index = request.res.req.rawHeaders.findIndex(indexFind);
       if (index != -1) {
         const BearerToken = request.res.req.rawHeaders[index + 1];
         const token = BearerToken.split('Bearer')[1];
         try {
-          const user: any = jwtDecode(token);
-          if (user?.is_super_user) {
+          const user = jwtDecode(token);
+          if (user && user['is_super_user']) {
             return true;
           } else {
             return false;

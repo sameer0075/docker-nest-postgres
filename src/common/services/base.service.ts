@@ -30,10 +30,10 @@ export class BaseService<T> {
     return this.repo.findOne(opts);
   }
 
-  async save(payload): Promise<T> {
+  async save(payload, relations?): Promise<T> {
     const cacheKey = this.entityName + '_all';
     const cacheData = await this.client.get(cacheKey);
-    const data = await this.repo.save(payload);
+    const data = await this.repo.save(payload, relations);
     let savedData = [];
     if (cacheData) {
       savedData = JSON.parse(cacheData);
@@ -45,16 +45,22 @@ export class BaseService<T> {
     return data;
   }
 
-  async update(id: number, payload): Promise<T> {
+  async update(id: number, payload, relations?): Promise<T> {
     const cacheKey = this.entityName + '_all';
     const cacheData = await this.client.get(cacheKey);
-    const data = this.repo.update(id, payload);
+    const data = await this.repo.update(id, payload);
+    payload['id'] = id;
+    const savedData = relations
+      ? await this.findOne({
+          where: { id },
+          relations: relations.relations,
+        })
+      : payload;
     if (cacheData) {
       const parsedData = JSON.parse(cacheData);
       const index = parsedData.findIndex((obj) => obj.id === id);
       if (index != -1) {
-        payload['id'] = id;
-        parsedData[index] = payload;
+        parsedData[index] = savedData;
         await this.client.set(cacheKey, JSON.stringify(parsedData), 0);
       }
     }

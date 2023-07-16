@@ -32,7 +32,9 @@ export class CarsService {
   }
 
   async create(body: CarRequestDto): Promise<CarResponseDto> {
-    const data: Cars = await this.carsRep.save(body);
+    const data: Cars = await this.carsRep.save(body, {
+      relations: ['category_id'],
+    });
     const { id, name, description, model, make, color, registration_no } = data;
     const category_id: Categories = await this.categoryrRep.findOne({
       where: { id: body.category_id },
@@ -135,7 +137,7 @@ export class CarsService {
   }
 
   async update(id: number, body: CarRequestDto): Promise<CarResponseDto> {
-    await this.carsRep.update(id, body);
+    await this.carsRep.update(id, body, { relations: ['category_id'] });
     const data: Cars = await this.carsRep.findOne({
       where: { id },
       relations: ['category_id'],

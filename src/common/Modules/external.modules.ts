@@ -5,8 +5,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from 'src/shared/typeorm/typeorm.service';
-import { CacheModule } from '@nestjs/common';
-
+import { CacheModule } from '@nestjs/cache-manager';
 export const ExternalModules = [
   ConfigModule.forRoot(),
   ScheduleModule.forRoot(),

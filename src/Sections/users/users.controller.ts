@@ -53,6 +53,22 @@ export class UsersController {
     }
   }
 
+  @Get('/logout')
+  async logout(
+    @Res() response: Response,
+    @LoggedInUser() loggedInUser,
+  ): Promise<string> {
+    try {
+      const data = await this.usersService.logout(loggedInUser);
+      response.status(PostgreStatusCode.SuccessCode).send(data);
+      return data;
+    } catch (err) {
+      response
+        .status(PostgreStatusCode.AuthorizationError)
+        .send({ error: true, message: err });
+    }
+  }
+
   @AllowUnauthorizedRequest()
   @Post('login')
   async login(

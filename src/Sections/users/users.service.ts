@@ -3,6 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/services/base.service';
 import { Cache } from 'cache-manager';
 import { Repository } from 'typeorm';
+import * as cache from 'memory-cache';
+const activeSessions = new cache.Cache();
+
 import {
   LoginRequestDto,
   ResendOtpRequestDto,
@@ -19,8 +22,6 @@ import { emailService } from 'src/common/utils/email-service';
 import { emailContent } from 'src/common/templates/html-content';
 import ShortUniqueId from 'short-unique-id';
 const uid = new ShortUniqueId({ length: 6 });
-
-const SALT_ROUNDS = 10;
 
 @Injectable()
 export class UsersService {
@@ -40,8 +41,6 @@ export class UsersService {
   }
 
   async create(body: UserRequestDto): Promise<UserResponseDto> {
-    const hashed = await bcrypt.hashSync(body.password, SALT_ROUNDS);
-    body.password = hashed;
     const userExist = await this.userRep.findOne({
       withDeleted: true,
       where: { email: body.email },
@@ -52,7 +51,8 @@ export class UsersService {
       const otp = uid();
       Object.assign(body, { otp, is_active: 0 });
       const content = emailContent(body);
-      const data: User = await this.userRep.save(body);
+      const payload = this.userRepository.create(body);
+      const data: User = await this.userRep.save(payload);
       if (data) {
         emailService(this.mailService, body.email, content, 'Sign Up EMail ✔');
         const { id, name, email, phone, is_active } = data;
@@ -90,10 +90,16 @@ export class UsersService {
           is_active,
           is_super_user,
         };
+        // const userId = data.id.toString();
+        // const existingSession = activeSessions.get(userId);
+        // if (existingSession) {
+        //   throw 'User is already logged in on another device or session.';
+        // }
         const token = jwt.sign(user, process.env.JWT_SECRET, {
           expiresIn: process.env.JWT_EXPIRATION_TIME,
         });
         await this.userRep.update(data.id, { otp: null });
+        // activeSessions.put(userId, true);
         return new UserResponseDto(
           id,
           name,
@@ -113,6 +119,12 @@ export class UsersService {
         throw 'Invalid Credentials! User not found.';
       }
     }
+  }
+
+  async logout(user): Promise<string> {
+    // Remove the user's session from the cache when they log out.
+    activeSessions.del(user.id.toString());
+    return 'User Logged out successfully';
   }
 
   async findAll(

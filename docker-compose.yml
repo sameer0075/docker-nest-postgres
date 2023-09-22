@@ -1,0 +1,52 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - '.env'
+    volumes:
+      - .:/app
+    expose:
+      - 3002
+    ports:
+      - '3002:3002' 
+    depends_on:
+      - postgres
+    networks:
+      - mybridge
+
+  migrations: # Add this new service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - '.env'
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+    entrypoint: ["npm", "run", "migration:run"] # Run migrations when the container starts
+    networks:
+      - mybridge
+
+  postgres:
+    image: postgres:13
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=boilerplate
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - mybridge
+
+networks:
+  mybridge:
+volumes:
+  postgres:

@@ -12,7 +12,7 @@ Steps To Run Backend
 
 6) Run server using command (npm run start:dev)
 
-7) Swagger is integrated in project you can access swagger on route (BASE_URL from env/api endipoint e.g: http://localhost:3001/api)
+7) Swagger is integrated in project you can access swagger on route (BASE_URL from env/api endipoint e.g: http://localhost:3002/api)
 
 8) In Swagger first use login api to get token by default the user created via migration is (email:admin@gmail.com,password:pass@word) get token by adding these in body using swagger and then get token from it and click the green authorize button it will ask for token. Place the token there without using Bearer.After that you would be able to use other apis
 

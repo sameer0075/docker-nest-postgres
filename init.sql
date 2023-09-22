@@ -1,0 +1,1 @@
+CREATE DATABASE boilerplate IF NOT EXISTS;

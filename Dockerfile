@@ -1,20 +1,28 @@
-# Use a base Node.js image
-FROM node:14
+# Use an official Node.js runtime as a parent image
+FROM node:16
 
-# Set the working directory inside the container
-WORKDIR /usr/src/app
+# Set the working directory to /app
+WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+# Copy package.json and package-lock.json to /app/
+COPY package*.json .
 
-# Install dependencies
+# Install npm packages for development
 RUN npm install
 
-# Copy the rest of the application files to the working directory
+# Install ts-node globally
+RUN npm install -g ts-node
+
+COPY tsconfig.json .
+
+# Copy the rest of the application code to /app/
 COPY . .
 
-# Expose the port on which your Nest.js application is listening
-EXPOSE 3001
+# RUN npm run migration:run
 
-# Specify the command to start your Nest.js application
-CMD ["npm", "run", "start"]
+# Expose port for the development server if needed
+EXPOSE 3002
+
+CMD [ "npm", "run", "start:dev" ]
+
+

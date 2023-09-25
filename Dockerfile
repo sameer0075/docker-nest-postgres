@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json .
 
 # Install npm packages for production (skip devDependencies)
-RUN npm install --only=production
+RUN npm install
 
 # Copy the rest of the application code to /app/
 COPY . .
@@ -15,7 +15,7 @@ COPY . .
 # Expose port for the production server if needed
 EXPOSE 3002
 
-CMD [ "node", "src/index.js" ]
+CMD [ "npm", "run", "start:prod" ]
 
 # Development Stage
 FROM node:16 AS development

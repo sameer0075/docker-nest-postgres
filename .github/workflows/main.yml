@@ -28,3 +28,11 @@ jobs:
           context: .
           target: development  # Specify the correct target stage
           load: true
+
+      # Build and push stage for the "production" target
+      - name: Build and push (Production)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: production  # Specify the correct target stage
+          tags: ${{ secrets.DOCKER_USERNAME }}/docker-nest-postgres:latest

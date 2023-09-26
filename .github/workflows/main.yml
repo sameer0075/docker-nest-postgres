@@ -23,16 +23,10 @@ jobs:
 
       # Build and test stage for the "development" target
       - name: Build and test (Development)
-        run: |
-          docker build -t docker-nest-postgres:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/docker-nest-postgres:latest
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/docker-nest-postgres:latest
 
-      # Build and push stage for the "production" target
-      - name: Build and push (Production)
-        run: |
-          docker build -t docker-nest-postgres:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/docker-nest-postgres:latest
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+
